@@ -33,8 +33,30 @@
 #include <PortableDeviceApi.h>
 #pragma comment(lib,"PortableDeviceGUIDs.lib")
 
+static
+bool s_optVerbose = false;
+
 void
 LOGV( LPCWSTR format, ... )
+{
+    if ( false == s_optVerbose )
+    {
+        return;
+    }
+
+    wchar_t buff[512];
+
+    va_list argPtr;
+    va_start( argPtr, format );
+
+    ::_vsnwprintf_s( buff, sizeof(buff)/sizeof(buff[0]), _TRUNCATE, format, argPtr );
+
+    ::fwprintf( stdout, buff );
+    ::OutputDebugStringW( buff );
+}
+
+void
+LOGI( LPCWSTR format, ... )
 {
     wchar_t buff[512];
 
@@ -269,6 +291,22 @@ wpdEnumContent_RecursiveEnumerate(
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    if ( NULL != argv )
+    {
+        for ( int index = 1; index < argc; ++index )
+        {
+            if ( NULL == argv[index] )
+            {
+                continue;
+            }
+
+            if ( 0 == _tcscmp( argv[index], L"--verbose" ) )
+            {
+                s_optVerbose = true;
+            }
+        }
+    }
+
     bool needCoUninitialize = false;
     {
         const DWORD dwCoInit = COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE;
