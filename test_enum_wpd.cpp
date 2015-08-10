@@ -198,14 +198,6 @@ wpdEnumContent_RecursiveEnumerate(
 
         if ( NULL != pszObjectIdArray )
         {
-            for ( size_t index = 0; index < MY_FETCH_COUNT; ++index )
-            {
-                pszObjectIdArray[index] = NULL;
-            }
-        }
-
-        if ( NULL != pszObjectIdArray )
-        {
             HRESULT hr = S_OK;
             while ( S_OK == hr ) // not SUCCEEDED(hr)
             {
