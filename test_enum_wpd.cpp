@@ -348,7 +348,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 }
                 else
                 {
-                    LOGV( L"IPortableDeviceManager::GetDevices get count, device count=%u\n", dwCountDeviceId );
+                    LOGI( L"IPortableDeviceManager::GetDevices get count, device count=%u\n", dwCountDeviceId );
                     if ( 0 < dwCountDeviceId )
                     {
                         break;
@@ -440,7 +440,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         }
                         else
                         {
-                            LOGV( L"    FriendlyName: %s\n", pDispBuff );
+                            LOGI( L"    FriendlyName: %s\n", pDispBuff );
                         }
                     }
                 }
@@ -485,7 +485,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         }
                         else
                         {
-                            LOGV( L"    Manufacturer: %s\n", pDispBuff );
+                            LOGI( L"    Manufacturer: %s\n", pDispBuff );
                         }
                     }
                 }
@@ -530,7 +530,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         }
                         else
                         {
-                            LOGV( L"    Description : %s\n", pDispBuff );
+                            LOGI( L"    Description : %s\n", pDispBuff );
                         }
                     }
                 }
