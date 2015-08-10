@@ -183,6 +183,25 @@ wpdEnumContent_RecursiveEnumerate(
                     pValue = NULL;
                 }
             }
+            {
+                GUID guid;
+                const HRESULT hr = pAttributes->GetGuidValue(
+                    WPD_OBJECT_CONTENT_TYPE
+                    , &guid
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_FOLDER ) )
+                    {
+                        LOGV( L" Content type: Folder\n" );
+                    }
+                    else
+                    if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_IMAGE ) )
+                    {
+                        LOGV( L" Content type: Image\n" );
+                    }
+                }
+            }
         }
 
         if ( NULL != pAttributes )
