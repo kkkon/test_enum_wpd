@@ -94,6 +94,9 @@ DumpPropertyKey( const PROPERTYKEY* pKey )
 }
 
 #define MY_WPDENUM_NUM_OBJECTS_PER_ONE_REQUEST (10)
+static
+DWORD   s_dwCountContent = 0;
+
 void
 wpdEnumContent_RecursiveEnumerate(
     LPCWSTR pszObjectId
@@ -241,6 +244,7 @@ wpdEnumContent_RecursiveEnumerate(
                 }
                 else
                 {
+                    s_dwCountContent += nFetched;
                     for ( DWORD dwIndex = 0; dwIndex < nFetched; ++dwIndex )
                     {
                         wpdEnumContent_RecursiveEnumerate( pszObjectIdArray[dwIndex], pPortableDeviceContent );
@@ -694,7 +698,9 @@ int _tmain(int argc, _TCHAR* argv[])
                     }
                     if ( NULL != pPortableDeviceContent )
                     {
+                        s_dwCountContent = 0;
                         wpdEnumContent_RecursiveEnumerate( WPD_DEVICE_OBJECT_ID, pPortableDeviceContent );
+                        LOGI( L"    Content count=%u\n", s_dwCountContent );
                     }
 
                     if ( NULL != pPortableDeviceContent )
