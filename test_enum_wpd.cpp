@@ -166,6 +166,157 @@ wpdEnumContent_RecursiveEnumerate(
 
                 DumpPropertyKey( &propKey );
             }
+
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_DEVICE_FIRMWARE_VERSION
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceFirmwareVersion: %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_DEVICE_MANUFACTURER
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceManufacturer   : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_DEVICE_MODEL
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceModel          : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_DEVICE_SERIAL_NUMBER
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceSerialNumber   : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_DEVICE_FRIENDLY_NAME
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceFriendlyName   : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                BOOL BValue = FALSE;
+                const HRESULT hr = pAttributes->GetBoolValue(
+                    WPD_DEVICE_SUPPORTS_NON_CONSUMABLE
+                    , &BValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" DeviceSupportsNonConsumable: %s\n", (BValue?(L"TRUE"):(L"FALSE")) );
+                }
+            }
+
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_STORAGE_SERIAL_NUMBER
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" StorageSerialNumber  : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_STORAGE_DESCRIPTION
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" StorageDescription   : %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
+
+
+            {
+                LPWSTR pValue = NULL;
+                const HRESULT hr = pAttributes->GetStringValue(
+                    WPD_OBJECT_NAME
+                    , &pValue
+                    );
+                if ( SUCCEEDED(hr) )
+                {
+                    LOGV( L" ObjectName: %s\n", pValue );
+                }
+
+                if ( NULL != pValue )
+                {
+                    ::CoTaskMemFree( pValue );
+                    pValue = NULL;
+                }
+            }
             {
                 LPWSTR pValue = NULL;
                 const HRESULT hr = pAttributes->GetStringValue(
@@ -174,7 +325,7 @@ wpdEnumContent_RecursiveEnumerate(
                     );
                 if ( SUCCEEDED(hr) )
                 {
-                    LOGV( L" %s\n", pValue );
+                    LOGV( L" ObjectOriginalFileName: %s\n", pValue );
                 }
 
                 if ( NULL != pValue )
