@@ -42,6 +42,8 @@ static
 bool s_optVerbose = false;
 static
 bool s_optUsePortableDeviceFTM = false;
+static
+DWORD s_optCountOfFetch = 10U;
 
 void
 LOGV( LPCWSTR format, ... )
@@ -119,7 +121,6 @@ DumpPropertyKey( const PROPERTYKEY* pKey )
           );
 }
 
-#define MY_WPDENUM_NUM_OBJECTS_PER_ONE_REQUEST (10)
 static
 DWORD   s_dwCountContent = 0;
 
@@ -417,7 +418,7 @@ wpdEnumContent_RecursiveEnumerate(
 
     if ( NULL != pEnumPortableDeviceObjectIDs )
     {
-        const size_t MY_FETCH_COUNT = MY_WPDENUM_NUM_OBJECTS_PER_ONE_REQUEST;
+        const DWORD MY_FETCH_COUNT = s_optCountOfFetch;
         LPWSTR* pszObjectIdArray = new LPWSTR[MY_FETCH_COUNT];
 
         if ( NULL != pszObjectIdArray )
@@ -512,8 +513,24 @@ int _tmain(int argc, _TCHAR* argv[])
             {
                 s_optUsePortableDeviceFTM = true;
             }
+            else
+            if ( 0 == _tcsncmp( argv[index], L"--fetch-count=", _tcslen(L"--fetch-count=") ) )
+            {
+                TCHAR* endptr = NULL;
+                TCHAR* p = &argv[index][_tcslen(L"--fetch-count=")];
+                const unsigned long result = _tcstoul( p, &endptr, 10 );
+                if ( ULONG_MAX != result )
+                {
+                    if ( NULL != endptr && _T('\0') == *endptr )
+                    {
+                        s_optCountOfFetch = result;
+                    }
+                }
+            }
         }
     }
+
+    LOGI( L"Fetch Count: %u\n", s_optCountOfFetch );
 
     bool needCoUninitialize = false;
     {
