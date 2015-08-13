@@ -70,6 +70,25 @@ LOGI( LPCWSTR format, ... )
 }
 
 void
+LOGE( LPCWSTR format, ... )
+{
+    wchar_t buff[512];
+
+    va_list argPtr;
+    va_start( argPtr, format );
+
+    ::_vsnwprintf_s( buff, sizeof(buff)/sizeof(buff[0]), _TRUNCATE, format, argPtr );
+
+    ::fwprintf( stderr, buff );
+    ::OutputDebugStringW( buff );
+    if ( ::IsDebuggerPresent() )
+    {
+        ::DebugBreak();
+    }
+}
+
+
+void
 DumpPropertyKey( const PROPERTYKEY* pKey )
 {
     if ( NULL == pKey )
@@ -125,7 +144,7 @@ wpdEnumContent_RecursiveEnumerate(
             const HRESULT hr = pPortableDeviceContent->Properties( &pPortableDeviceProperties );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. pPortableDeviceContent Properties, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. pPortableDeviceContent Properties, hr=0x%08x\n", hr );
             }
         }
 
@@ -138,7 +157,7 @@ wpdEnumContent_RecursiveEnumerate(
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. pPortableDeviceProperties GetValues, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. pPortableDeviceProperties GetValues, hr=0x%08x\n", hr );
             }
         }
 
@@ -149,7 +168,7 @@ wpdEnumContent_RecursiveEnumerate(
                 const HRESULT hr = pAttributes->GetCount( &dwCount );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. pPortableDeviceProperties GetCount, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. pPortableDeviceProperties GetCount, hr=0x%08x\n", hr );
                 }
                 else
                 {
@@ -162,7 +181,7 @@ wpdEnumContent_RecursiveEnumerate(
                 const HRESULT hr = pAttributes->GetAt( dwIndex, &propKey, NULL );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. pPortableDeviceProperties GetAt, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. pPortableDeviceProperties GetAt, hr=0x%08x\n", hr );
                 }
 
                 DumpPropertyKey( &propKey );
@@ -385,7 +404,7 @@ wpdEnumContent_RecursiveEnumerate(
             );
         if ( FAILED(hr) )
         {
-            LOGV( L"! Failed. pPortableDeviceContent EnumObjects, hr=0x%08x\n", hr );
+            LOGE( L"! Failed. pPortableDeviceContent EnumObjects, hr=0x%08x\n", hr );
         }
     }
 
@@ -413,7 +432,7 @@ wpdEnumContent_RecursiveEnumerate(
                     );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. pEnumPortableDeviceObjectIDs Next, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. pEnumPortableDeviceObjectIDs Next, hr=0x%08x\n", hr );
                 }
                 else
                 {
@@ -508,7 +527,7 @@ int _tmain(int argc, _TCHAR* argv[])
             );
         if ( FAILED(hr) )
         {
-            LOGV( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
+            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
         }
     }
 
@@ -521,7 +540,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 const HRESULT hr = pPortableDeviceManager->GetDevices( NULL, &dwCountDeviceId );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. IPortableDeviceManager::GetDevices get count, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. IPortableDeviceManager::GetDevices get count, hr=0x%08x\n", hr );
                 }
                 else
                 {
@@ -538,7 +557,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 const HRESULT hr = pPortableDeviceManager->RefreshDeviceList();
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. IPortableDeviceManager::RefreshDeviceList, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. IPortableDeviceManager::RefreshDeviceList, hr=0x%08x\n", hr );
                 }
             }
         }
@@ -559,7 +578,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 const HRESULT hr = pPortableDeviceManager->GetDevices( pDeviceIdArray, &dwCountDeviceId );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. IPortableDeviceManager::GetDevice get id and count, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. IPortableDeviceManager::GetDevice get id and count, hr=0x%08x\n", hr );
                 }
                 else
                 {
@@ -594,7 +613,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         );
                     if ( FAILED(hr) )
                     {
-                        LOGV( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get count, hr=0x%08x\n", hr );
+                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get count, hr=0x%08x\n", hr );
                         continue;
                     }
                 }
@@ -613,7 +632,7 @@ int _tmain(int argc, _TCHAR* argv[])
                             );
                         if ( FAILED(hr) )
                         {
-                            LOGV( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get name and count, hr=0x%08x\n", hr );
+                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get name and count, hr=0x%08x\n", hr );
                         }
                         else
                         {
@@ -639,7 +658,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         );
                     if ( FAILED(hr) )
                     {
-                        LOGV( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get count, hr=0x%08x\n", hr );
+                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get count, hr=0x%08x\n", hr );
                         continue;
                     }
                 }
@@ -658,7 +677,7 @@ int _tmain(int argc, _TCHAR* argv[])
                             );
                         if ( FAILED(hr) )
                         {
-                            LOGV( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get name and count, hr=0x%08x\n", hr );
+                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get name and count, hr=0x%08x\n", hr );
                         }
                         else
                         {
@@ -684,7 +703,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         );
                     if ( FAILED(hr) )
                     {
-                        LOGV( L"! Failed. IPortableDeviceManager::GetDeviceDescription get count, hr=0x%08x\n", hr );
+                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get count, hr=0x%08x\n", hr );
                         continue;
                     }
                 }
@@ -703,7 +722,7 @@ int _tmain(int argc, _TCHAR* argv[])
                             );
                         if ( FAILED(hr) )
                         {
-                            LOGV( L"! Failed. IPortableDeviceManager::GetDeviceDescription get name and count, hr=0x%08x\n", hr );
+                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get name and count, hr=0x%08x\n", hr );
                         }
                         else
                         {
@@ -733,7 +752,7 @@ int _tmain(int argc, _TCHAR* argv[])
             );
         if ( FAILED(hr) )
         {
-            LOGV( L"! Failed. CoCreateInstance CLSID_PortableDeviceValues, hr=0x%08x\n", hr );
+            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceValues, hr=0x%08x\n", hr );
         }
     }
 
@@ -750,7 +769,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetStringValue WPD_CLIENT_NAME, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetStringValue WPD_CLIENT_NAME, hr=0x%08x\n", hr );
             }
         }
         {
@@ -760,7 +779,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_MAJOR_VERSION, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_MAJOR_VERSION, hr=0x%08x\n", hr );
             }
         }
         {
@@ -770,7 +789,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_MINOR_VERSION, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_MINOR_VERSION, hr=0x%08x\n", hr );
             }
         }
         {
@@ -780,7 +799,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_REVISION, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_REVISION, hr=0x%08x\n", hr );
             }
         }
 
@@ -791,7 +810,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_SECURITY_QUALITY_OF_SERVICE, hr=0x%08x\n", hr );
             }
         }
 
@@ -802,7 +821,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_DESIRED_ACCESS, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_DESIRED_ACCESS, hr=0x%08x\n", hr );
             }
         }
 
@@ -813,7 +832,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 );
             if ( FAILED(hr) )
             {
-                LOGV( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_DESIRED_ACCESS, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. IPortableDeviceValues::SetUnsignedIntegerValue WPD_CLIENT_DESIRED_ACCESS, hr=0x%08x\n", hr );
             }
         }
 
@@ -839,7 +858,7 @@ int _tmain(int argc, _TCHAR* argv[])
                     );
                 if ( FAILED(hr) )
                 {
-                    LOGV( L"! Failed. CoCreateInstance CLSID_PortableDevice, hr=0x%08x\n", hr );
+                    LOGE( L"! Failed. CoCreateInstance CLSID_PortableDevice, hr=0x%08x\n", hr );
                 }
             }
 
@@ -849,7 +868,7 @@ int _tmain(int argc, _TCHAR* argv[])
                     const HRESULT hr = pPortableDevice->Open( pDeviceIdArray[index], pPortableDeviceValues );
                     if ( FAILED(hr) )
                     {
-                        LOGV( L"! Failed. IPortableDevice::Open, hr=0x%08x\n", hr );
+                        LOGE( L"! Failed. IPortableDevice::Open, hr=0x%08x\n", hr );
                     }
                     else
                     {
@@ -867,7 +886,7 @@ int _tmain(int argc, _TCHAR* argv[])
                         const HRESULT hr = pPortableDevice->Content( &pPortableDeviceContent );
                         if ( FAILED(hr) )
                         {
-                            LOGV( L"! Failed. IPortableDevice::Content, hr=0x%08x\n", hr );
+                            LOGE( L"! Failed. IPortableDevice::Content, hr=0x%08x\n", hr );
                         }
                     }
                     if ( NULL != pPortableDeviceContent )
