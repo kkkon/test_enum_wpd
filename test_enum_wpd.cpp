@@ -32,6 +32,11 @@
 #include <PortableDevice.h>
 #include <PortableDeviceApi.h>
 #pragma comment(lib,"PortableDeviceGUIDs.lib")
+// CLSID_PortableDeviceFTM need WindowsSDK 7.1 over
+EXTERN_C const GUID DECLSPEC_SELECTANY myCLSID_PortableDeviceFTM = {
+    0xf7c0039a,0x4762,0x488a,{0xb4,0xb3,0x76,0x0e,0xf9,0xa1,0xba,0x9b}
+};
+
 
 static
 bool s_optVerbose = false;
@@ -835,6 +840,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
     }
 
+#if defined(_MSC_VER) && (_MSC_VER > 1500)
+    {
+        if ( ::IsEqualCLSID( myCLSID_PortableDeviceFTM, CLSID_PortableDeviceFTM ) )
+        {
+            LOGV( L"myCLSID_PortableDeviceFTM matched CLSID_PortableDeviceFTM\n" );
+        }
+        else
+        {
+            LOGE( L"myCLSID_PortableDeviceFTM not match CLSID_PortableDeviceFTM\n" );
+            ::DebugBreak();
+        }
+    }
+#endif
+
     if ( NULL != pDeviceIdArray )
     {
         for ( size_t index = 0; index < dwCountDeviceId; ++index )
@@ -849,6 +868,7 @@ int _tmain(int argc, _TCHAR* argv[])
             {
                 const HRESULT hr = ::CoCreateInstance(
                     CLSID_PortableDevice
+                    //myCLSID_PortableDeviceFTM
                     , NULL
                     , CLSCTX_INPROC_SERVER
                     , IID_PPV_ARGS(&pPortableDevice)
