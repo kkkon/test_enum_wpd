@@ -614,7 +614,6 @@ int _tmain(int argc, _TCHAR* argv[])
                     if ( FAILED(hr) )
                     {
                         LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get count, hr=0x%08x\n", hr );
-                        continue;
                     }
                 }
 
@@ -659,7 +658,6 @@ int _tmain(int argc, _TCHAR* argv[])
                     if ( FAILED(hr) )
                     {
                         LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get count, hr=0x%08x\n", hr );
-                        continue;
                     }
                 }
 
@@ -704,7 +702,6 @@ int _tmain(int argc, _TCHAR* argv[])
                     if ( FAILED(hr) )
                     {
                         LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get count, hr=0x%08x\n", hr );
-                        continue;
                     }
                 }
 
