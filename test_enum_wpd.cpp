@@ -40,6 +40,8 @@ EXTERN_C const GUID DECLSPEC_SELECTANY myCLSID_PortableDeviceFTM = {
 
 static
 bool s_optVerbose = false;
+static
+bool s_optUsePortableDeviceFTM = false;
 
 void
 LOGV( LPCWSTR format, ... )
@@ -505,6 +507,11 @@ int _tmain(int argc, _TCHAR* argv[])
             {
                 s_optVerbose = true;
             }
+            else
+            if ( 0 == _tcscmp( argv[index], L"--use-deviceftm" ) )
+            {
+                s_optUsePortableDeviceFTM = true;
+            }
         }
     }
 
@@ -866,9 +873,9 @@ int _tmain(int argc, _TCHAR* argv[])
             bool readyPortableDevice = false;
             IPortableDevice* pPortableDevice = NULL;
             {
+                const IID& rclsid = (s_optUsePortableDeviceFTM)?(myCLSID_PortableDeviceFTM):(CLSID_PortableDevice);
                 const HRESULT hr = ::CoCreateInstance(
-                    CLSID_PortableDevice
-                    //myCLSID_PortableDeviceFTM
+                    rclsid
                     , NULL
                     , CLSCTX_INPROC_SERVER
                     , IID_PPV_ARGS(&pPortableDevice)
