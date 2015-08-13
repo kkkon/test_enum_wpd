@@ -116,6 +116,7 @@ wpdEnumContent_RecursiveEnumerate(
 
 
     LOGV( L"enum content: %s\n", pszObjectId );
+    if ( NULL != pPortableDeviceContent )
     {
         IPortableDeviceProperties* pPortableDeviceProperties = NULL;
         IPortableDeviceValues* pAttributes = NULL;
@@ -371,6 +372,7 @@ wpdEnumContent_RecursiveEnumerate(
     }
 
     IEnumPortableDeviceObjectIDs* pEnumPortableDeviceObjectIDs = NULL;
+    if ( NULL != pPortableDeviceContent )
     {
         const DWORD dwFlags = 0;
         IPortableDeviceValues* pFilter = NULL;
@@ -387,6 +389,7 @@ wpdEnumContent_RecursiveEnumerate(
         }
     }
 
+    if ( NULL != pEnumPortableDeviceObjectIDs )
     {
         const size_t MY_FETCH_COUNT = MY_WPDENUM_NUM_OBJECTS_PER_ONE_REQUEST;
         LPWSTR* pszObjectIdArray = new LPWSTR[MY_FETCH_COUNT];
@@ -542,7 +545,7 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     LPWSTR* pDeviceIdArray = NULL;
-    if ( 0 < dwCountDeviceId )
+    if ( 0 < dwCountDeviceId && NULL != pPortableDeviceManager )
     {
         pDeviceIdArray = new PWSTR[dwCountDeviceId];
         for ( size_t index = 0; index < dwCountDeviceId; ++index )
@@ -571,7 +574,7 @@ int _tmain(int argc, _TCHAR* argv[])
         }
     }
 
-    if ( NULL != pDeviceIdArray )
+    if ( NULL != pDeviceIdArray && NULL != pPortableDeviceManager )
     {
         for ( size_t index = 0; index < dwCountDeviceId; ++index )
         {
@@ -816,6 +819,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     }
 
+    if ( NULL != pDeviceIdArray )
     {
         for ( size_t index = 0; index < dwCountDeviceId; ++index )
         {
