@@ -135,11 +135,11 @@ dispDeviceValues( IPortableDeviceValues* pAttributes )
             const HRESULT hr = pAttributes->GetCount( &dwCount );
             if ( FAILED(hr) )
             {
-                LOGE( L"! Failed. pPortableDeviceProperties GetCount, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. pPortableDeviceValues GetCount, hr=0x%08x\n", hr );
             }
             else
             {
-                LOGV( L"pPortableDeviceProperties GetCount, count=%u\n", dwCount );
+                LOGV( L"pPortableDeviceValues GetCount, count=%u\n", dwCount );
             }
         }
         for ( DWORD dwIndex = 0; dwIndex < dwCount; ++dwIndex )
@@ -148,7 +148,7 @@ dispDeviceValues( IPortableDeviceValues* pAttributes )
             const HRESULT hr = pAttributes->GetAt( dwIndex, &propKey, NULL );
             if ( FAILED(hr) )
             {
-                LOGE( L"! Failed. pPortableDeviceProperties GetAt, hr=0x%08x\n", hr );
+                LOGE( L"! Failed. pPortableDeviceValues GetAt, hr=0x%08x\n", hr );
             }
 
             DumpPropertyKey( &propKey );
