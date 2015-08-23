@@ -509,6 +509,15 @@ dispDeviceInfo(
     , LPCWSTR pszPnPDeviceID
 )
 {
+    if ( NULL == pPortableDeviceManager )
+    {
+        return;
+    }
+    if ( NULL == pszPnPDeviceID )
+    {
+        return;
+    }
+
     {
         DWORD dwSize = 0;
         {
