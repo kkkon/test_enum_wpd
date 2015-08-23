@@ -375,6 +375,7 @@ wpdEnumContent_RecursiveEnumerate(
             if ( FAILED(hr) )
             {
                 LOGE( L"! Failed. pPortableDeviceContent Properties, hr=0x%08x\n", hr );
+                return;
             }
         }
 
@@ -653,11 +654,20 @@ dispDeviceInfo(
 }
 
 void
-enumWPDcore( IPortableDeviceManager* pPortableDeviceManager)
+enumWPDcore(void)
 {
-    if ( NULL == pPortableDeviceManager )
+    IPortableDeviceManager* pPortableDeviceManager = NULL;
     {
-        return;
+        const HRESULT hr = ::CoCreateInstance(
+            CLSID_PortableDeviceManager
+            , NULL
+            , CLSCTX_INPROC_SERVER
+            , IID_PPV_ARGS(&pPortableDeviceManager)
+            );
+        if ( FAILED(hr) )
+        {
+            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
+        }
     }
 
     DWORD dwCountDeviceId = 0;
@@ -956,6 +966,14 @@ enumWPDcore( IPortableDeviceManager* pPortableDeviceManager)
         delete [] pDeviceIdArray;
         pDeviceIdArray = NULL;
     }
+
+    if ( NULL != pPortableDeviceManager )
+    {
+        const DWORD dwCount = pPortableDeviceManager->Release();
+        LOGV( L"IPortableDeviceManager::Release, count=%u\n", dwCount );
+        pPortableDeviceManager = NULL;
+    }
+
 }
 
 
@@ -1013,27 +1031,9 @@ int _tmain(int argc, _TCHAR* argv[])
         }
     }
 
-    IPortableDeviceManager* pPortableDeviceManager = NULL;
+    for ( size_t index = 0; index < 10; ++index )
     {
-        const HRESULT hr = ::CoCreateInstance(
-            CLSID_PortableDeviceManager
-            , NULL
-            , CLSCTX_INPROC_SERVER
-            , IID_PPV_ARGS(&pPortableDeviceManager)
-            );
-        if ( FAILED(hr) )
-        {
-            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
-        }
-    }
-
-    enumWPDcore( pPortableDeviceManager );
-
-    if ( NULL != pPortableDeviceManager )
-    {
-        const DWORD dwCount = pPortableDeviceManager->Release();
-        LOGV( L"IPortableDeviceManager::Release, count=%u\n", dwCount );
-        pPortableDeviceManager = NULL;
+        enumWPDcore();
     }
 
     if ( needCoUninitialize )
