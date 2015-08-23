@@ -389,6 +389,7 @@ wpdEnumContent_RecursiveEnumerate(
             if ( FAILED(hr) )
             {
                 LOGE( L"! Failed. pPortableDeviceProperties GetValues, hr=0x%08x\n", hr );
+                return false;
             }
         }
 
@@ -430,7 +431,7 @@ wpdEnumContent_RecursiveEnumerate(
         }
     }
 
-    if ( NULL != pEnumPortableDeviceObjectIDs )
+    if ( false != result && NULL != pEnumPortableDeviceObjectIDs )
     {
         const DWORD MY_FETCH_COUNT = s_optCountOfFetch;
         LPWSTR* pszObjectIdArray = new LPWSTR[MY_FETCH_COUNT];
