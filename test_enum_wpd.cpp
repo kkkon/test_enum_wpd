@@ -346,7 +346,7 @@ dispDeviceValues( IPortableDeviceValues* pAttributes )
 static
 DWORD   s_dwCountContent = 0;
 
-void
+bool
 wpdEnumContent_RecursiveEnumerate(
     LPCWSTR pszObjectId
     , IPortableDeviceContent* pPortableDeviceContent
@@ -355,12 +355,12 @@ wpdEnumContent_RecursiveEnumerate(
     if ( NULL == pszObjectId )
     {
         LOGV( L"wpdEnumContent_RecursiveEnumerate: pszObjectId is NULL" );
-        return;
+        return false;
     }
     if ( NULL == pPortableDeviceContent )
     {
         LOGV( L"wpdEnumContent_RecursiveEnumerate: pPortableDeviceContent is NULL" );
-        return;
+        return false;
     }
 
 
@@ -375,7 +375,7 @@ wpdEnumContent_RecursiveEnumerate(
             if ( FAILED(hr) )
             {
                 LOGE( L"! Failed. pPortableDeviceContent Properties, hr=0x%08x\n", hr );
-                return;
+                return false;
             }
         }
 
@@ -409,6 +409,8 @@ wpdEnumContent_RecursiveEnumerate(
         }
     }
 
+    bool result = true;
+
     IEnumPortableDeviceObjectIDs* pEnumPortableDeviceObjectIDs = NULL;
     if ( NULL != pPortableDeviceContent )
     {
@@ -424,6 +426,7 @@ wpdEnumContent_RecursiveEnumerate(
         if ( FAILED(hr) )
         {
             LOGE( L"! Failed. pPortableDeviceContent EnumObjects, hr=0x%08x\n", hr );
+            result = false;
         }
     }
 
@@ -452,13 +455,18 @@ wpdEnumContent_RecursiveEnumerate(
                 if ( FAILED(hr) )
                 {
                     LOGE( L"! Failed. pEnumPortableDeviceObjectIDs Next, hr=0x%08x\n", hr );
+                    result = false;
                 }
                 else
                 {
                     s_dwCountContent += nFetched;
                     for ( DWORD dwIndex = 0; dwIndex < nFetched; ++dwIndex )
                     {
-                        wpdEnumContent_RecursiveEnumerate( pszObjectIdArray[dwIndex], pPortableDeviceContent );
+                        result = wpdEnumContent_RecursiveEnumerate( pszObjectIdArray[dwIndex], pPortableDeviceContent );
+                        if ( false == result )
+                        {
+                            break;
+                        }
                     }
 
                     //FreePortableDevicePnPIDs( pszObjectIdArray, MY_FETCH_COUNT );
@@ -502,6 +510,8 @@ wpdEnumContent_RecursiveEnumerate(
         LOGV( L"IEnumPortableDeviceObjectIDs::Release, count=%u\n", dwCount );
         pEnumPortableDeviceObjectIDs = NULL;
     }
+
+    return result;
 }
 
 void
@@ -916,8 +926,12 @@ enumWPDcore(void)
                         if ( NULL != pPortableDeviceContent )
                         {
                             s_dwCountContent = 0;
-                            wpdEnumContent_RecursiveEnumerate( WPD_DEVICE_OBJECT_ID, pPortableDeviceContent );
+                            const bool result = wpdEnumContent_RecursiveEnumerate( WPD_DEVICE_OBJECT_ID, pPortableDeviceContent );
                             LOGI( L"    Content count=%u\n", s_dwCountContent );
+                            if ( false == result )
+                            {
+                                break;
+                            }
                         }
 
                         ::Sleep( 1 * 1000 );
@@ -1034,6 +1048,7 @@ int _tmain(int argc, _TCHAR* argv[])
     for ( size_t index = 0; index < 10; ++index )
     {
         enumWPDcore();
+        ::Sleep( 1 * 1000 );
     }
 
     if ( needCoUninitialize )
