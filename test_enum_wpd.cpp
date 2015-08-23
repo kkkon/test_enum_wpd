@@ -940,11 +940,17 @@ int _tmain(int argc, _TCHAR* argv[])
                             LOGE( L"! Failed. IPortableDevice::Content, hr=0x%08x\n", hr );
                         }
                     }
-                    if ( NULL != pPortableDeviceContent )
+
+                    for ( size_t index = 0; index < 30; ++index )
                     {
-                        s_dwCountContent = 0;
-                        wpdEnumContent_RecursiveEnumerate( WPD_DEVICE_OBJECT_ID, pPortableDeviceContent );
-                        LOGI( L"    Content count=%u\n", s_dwCountContent );
+                        if ( NULL != pPortableDeviceContent )
+                        {
+                            s_dwCountContent = 0;
+                            wpdEnumContent_RecursiveEnumerate( WPD_DEVICE_OBJECT_ID, pPortableDeviceContent );
+                            LOGI( L"    Content count=%u\n", s_dwCountContent );
+                        }
+
+                        ::Sleep( 1 * 1000 );
                     }
 
                     if ( NULL != pPortableDeviceContent )
