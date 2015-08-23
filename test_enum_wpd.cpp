@@ -493,6 +493,146 @@ wpdEnumContent_RecursiveEnumerate(
     }
 }
 
+void
+dispDeviceInfo(
+    IPortableDeviceManager* pPortableDeviceManager
+    , LPCWSTR pszPnPDeviceID
+)
+{
+    {
+        DWORD dwSize = 0;
+        {
+            const HRESULT hr = pPortableDeviceManager->GetDeviceFriendlyName(
+                pszPnPDeviceID
+                , NULL
+                , &dwSize
+                );
+            if ( FAILED(hr) )
+            {
+                LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get count, hr=0x%08x\n", hr );
+            }
+        }
+
+        LPWSTR pDispBuff = NULL;
+        pDispBuff = new WCHAR[dwSize+1];
+        if ( NULL != pDispBuff )
+        {
+            pDispBuff[0] = L'\0';
+
+            {
+                const HRESULT hr = pPortableDeviceManager->GetDeviceFriendlyName(
+                    pszPnPDeviceID
+                    , pDispBuff
+                    , &dwSize
+                    );
+                if ( FAILED(hr) )
+                {
+                    LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get name and count, hr=0x%08x\n", hr );
+                }
+                else
+                {
+                    LOGI( L"    FriendlyName: %s\n", pDispBuff );
+                }
+            }
+        }
+
+        if ( NULL != pDispBuff )
+        {
+            delete [] pDispBuff;
+            pDispBuff = NULL;
+        }
+    }
+
+    {
+        DWORD dwSize = 0;
+        {
+            const HRESULT hr = pPortableDeviceManager->GetDeviceManufacturer(
+                pszPnPDeviceID
+                , NULL
+                , &dwSize
+                );
+            if ( FAILED(hr) )
+            {
+                LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get count, hr=0x%08x\n", hr );
+            }
+        }
+
+        LPWSTR pDispBuff = NULL;
+        pDispBuff = new WCHAR[dwSize+1];
+        if ( NULL != pDispBuff )
+        {
+            pDispBuff[0] = L'\0';
+
+            {
+                const HRESULT hr = pPortableDeviceManager->GetDeviceManufacturer(
+                    pszPnPDeviceID
+                    , pDispBuff
+                    , &dwSize
+                    );
+                if ( FAILED(hr) )
+                {
+                    LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get name and count, hr=0x%08x\n", hr );
+                }
+                else
+                {
+                    LOGI( L"    Manufacturer: %s\n", pDispBuff );
+                }
+            }
+        }
+
+        if ( NULL != pDispBuff )
+        {
+            delete [] pDispBuff;
+            pDispBuff = NULL;
+        }
+    }
+
+    {
+        DWORD dwSize = 0;
+        {
+            const HRESULT hr = pPortableDeviceManager->GetDeviceDescription(
+                pszPnPDeviceID
+                , NULL
+                , &dwSize
+                );
+            if ( FAILED(hr) )
+            {
+                LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get count, hr=0x%08x\n", hr );
+            }
+        }
+
+        LPWSTR pDispBuff = NULL;
+        pDispBuff = new WCHAR[dwSize+1];
+        if ( NULL != pDispBuff )
+        {
+            pDispBuff[0] = L'\0';
+
+            {
+                const HRESULT hr = pPortableDeviceManager->GetDeviceDescription(
+                    pszPnPDeviceID
+                    , pDispBuff
+                    , &dwSize
+                    );
+                if ( FAILED(hr) )
+                {
+                    LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get name and count, hr=0x%08x\n", hr );
+                }
+                else
+                {
+                    LOGI( L"    Description : %s\n", pDispBuff );
+                }
+            }
+        }
+
+        if ( NULL != pDispBuff )
+        {
+            delete [] pDispBuff;
+            pDispBuff = NULL;
+        }
+    }
+
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
     if ( NULL != argv )
@@ -632,137 +772,7 @@ int _tmain(int argc, _TCHAR* argv[])
             }
 
             LOGV( L"%3u: %s\n", index, pDeviceIdArray[index] );
-            {
-                DWORD dwSize = 0;
-                {
-                    const HRESULT hr = pPortableDeviceManager->GetDeviceFriendlyName(
-                        pDeviceIdArray[index]
-                        , NULL
-                        , &dwSize
-                        );
-                    if ( FAILED(hr) )
-                    {
-                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get count, hr=0x%08x\n", hr );
-                    }
-                }
-
-                LPWSTR pDispBuff = NULL;
-                pDispBuff = new WCHAR[dwSize+1];
-                if ( NULL != pDispBuff )
-                {
-                    pDispBuff[0] = L'\0';
-
-                    {
-                        const HRESULT hr = pPortableDeviceManager->GetDeviceFriendlyName(
-                            pDeviceIdArray[index]
-                            , pDispBuff
-                            , &dwSize
-                            );
-                        if ( FAILED(hr) )
-                        {
-                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceFriendlyName get name and count, hr=0x%08x\n", hr );
-                        }
-                        else
-                        {
-                            LOGI( L"    FriendlyName: %s\n", pDispBuff );
-                        }
-                    }
-                }
-
-                if ( NULL != pDispBuff )
-                {
-                    delete [] pDispBuff;
-                    pDispBuff = NULL;
-                }
-            }
-
-            {
-                DWORD dwSize = 0;
-                {
-                    const HRESULT hr = pPortableDeviceManager->GetDeviceManufacturer(
-                        pDeviceIdArray[index]
-                        , NULL
-                        , &dwSize
-                        );
-                    if ( FAILED(hr) )
-                    {
-                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get count, hr=0x%08x\n", hr );
-                    }
-                }
-
-                LPWSTR pDispBuff = NULL;
-                pDispBuff = new WCHAR[dwSize+1];
-                if ( NULL != pDispBuff )
-                {
-                    pDispBuff[0] = L'\0';
-
-                    {
-                        const HRESULT hr = pPortableDeviceManager->GetDeviceManufacturer(
-                            pDeviceIdArray[index]
-                            , pDispBuff
-                            , &dwSize
-                            );
-                        if ( FAILED(hr) )
-                        {
-                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceManufacturer get name and count, hr=0x%08x\n", hr );
-                        }
-                        else
-                        {
-                            LOGI( L"    Manufacturer: %s\n", pDispBuff );
-                        }
-                    }
-                }
-
-                if ( NULL != pDispBuff )
-                {
-                    delete [] pDispBuff;
-                    pDispBuff = NULL;
-                }
-            }
-
-            {
-                DWORD dwSize = 0;
-                {
-                    const HRESULT hr = pPortableDeviceManager->GetDeviceDescription(
-                        pDeviceIdArray[index]
-                        , NULL
-                        , &dwSize
-                        );
-                    if ( FAILED(hr) )
-                    {
-                        LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get count, hr=0x%08x\n", hr );
-                    }
-                }
-
-                LPWSTR pDispBuff = NULL;
-                pDispBuff = new WCHAR[dwSize+1];
-                if ( NULL != pDispBuff )
-                {
-                    pDispBuff[0] = L'\0';
-
-                    {
-                        const HRESULT hr = pPortableDeviceManager->GetDeviceDescription(
-                            pDeviceIdArray[index]
-                            , pDispBuff
-                            , &dwSize
-                            );
-                        if ( FAILED(hr) )
-                        {
-                            LOGE( L"! Failed. IPortableDeviceManager::GetDeviceDescription get name and count, hr=0x%08x\n", hr );
-                        }
-                        else
-                        {
-                            LOGI( L"    Description : %s\n", pDispBuff );
-                        }
-                    }
-                }
-
-                if ( NULL != pDispBuff )
-                {
-                    delete [] pDispBuff;
-                    pDispBuff = NULL;
-                }
-            }
+            dispDeviceInfo( pPortableDeviceManager, pDeviceIdArray[index] );
         }
     }
 
