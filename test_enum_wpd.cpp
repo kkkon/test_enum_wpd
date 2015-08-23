@@ -703,7 +703,7 @@ int _tmain(int argc, _TCHAR* argv[])
     DWORD dwCountDeviceId = 0;
     if ( NULL != pPortableDeviceManager )
     {
-        for ( size_t retry = 0; retry < 5; ++retry )
+        for ( size_t retry = 0; retry < 30; ++retry )
         {
             {
                 const HRESULT hr = pPortableDeviceManager->GetDevices( NULL, &dwCountDeviceId );
@@ -721,7 +721,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 }
             }
 
-            ::Sleep( 5 * 1000 );
+            ::Sleep( 1 * 1000 );
             {
                 const HRESULT hr = pPortableDeviceManager->RefreshDeviceList();
                 if ( FAILED(hr) )
