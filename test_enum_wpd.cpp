@@ -121,6 +121,228 @@ DumpPropertyKey( const PROPERTYKEY* pKey )
           );
 }
 
+void
+dispDeviceValues( IPortableDeviceValues* pAttributes )
+{
+    if ( NULL == pAttributes )
+    {
+        return;
+    }
+
+    {
+        DWORD dwCount = 0;
+        {
+            const HRESULT hr = pAttributes->GetCount( &dwCount );
+            if ( FAILED(hr) )
+            {
+                LOGE( L"! Failed. pPortableDeviceProperties GetCount, hr=0x%08x\n", hr );
+            }
+            else
+            {
+                LOGV( L"pPortableDeviceProperties GetCount, count=%u\n", dwCount );
+            }
+        }
+        for ( DWORD dwIndex = 0; dwIndex < dwCount; ++dwIndex )
+        {
+            PROPERTYKEY propKey;
+            const HRESULT hr = pAttributes->GetAt( dwIndex, &propKey, NULL );
+            if ( FAILED(hr) )
+            {
+                LOGE( L"! Failed. pPortableDeviceProperties GetAt, hr=0x%08x\n", hr );
+            }
+
+            DumpPropertyKey( &propKey );
+        }
+
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_DEVICE_FIRMWARE_VERSION
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceFirmwareVersion: %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_DEVICE_MANUFACTURER
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceManufacturer   : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_DEVICE_MODEL
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceModel          : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_DEVICE_SERIAL_NUMBER
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceSerialNumber   : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_DEVICE_FRIENDLY_NAME
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceFriendlyName   : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            BOOL BValue = FALSE;
+            const HRESULT hr = pAttributes->GetBoolValue(
+                WPD_DEVICE_SUPPORTS_NON_CONSUMABLE
+                , &BValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" DeviceSupportsNonConsumable: %s\n", (BValue?(L"TRUE"):(L"FALSE")) );
+            }
+        }
+
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_STORAGE_SERIAL_NUMBER
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" StorageSerialNumber  : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_STORAGE_DESCRIPTION
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" StorageDescription   : %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+
+
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_OBJECT_NAME
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" ObjectName: %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            LPWSTR pValue = NULL;
+            const HRESULT hr = pAttributes->GetStringValue(
+                WPD_OBJECT_ORIGINAL_FILE_NAME
+                , &pValue
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                LOGV( L" ObjectOriginalFileName: %s\n", pValue );
+            }
+
+            if ( NULL != pValue )
+            {
+                ::CoTaskMemFree( pValue );
+                pValue = NULL;
+            }
+        }
+        {
+            GUID guid;
+            const HRESULT hr = pAttributes->GetGuidValue(
+                WPD_OBJECT_CONTENT_TYPE
+                , &guid
+                );
+            if ( SUCCEEDED(hr) )
+            {
+                if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_FOLDER ) )
+                {
+                    LOGV( L" Content type: Folder\n" );
+                }
+                else
+                if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_IMAGE ) )
+                {
+                    LOGV( L" Content type: Image\n" );
+                }
+            }
+        }
+    }
+}
+
 static
 DWORD   s_dwCountContent = 0;
 
@@ -169,219 +391,7 @@ wpdEnumContent_RecursiveEnumerate(
             }
         }
 
-        if ( NULL != pAttributes )
-        {
-            DWORD dwCount = 0;
-            {
-                const HRESULT hr = pAttributes->GetCount( &dwCount );
-                if ( FAILED(hr) )
-                {
-                    LOGE( L"! Failed. pPortableDeviceProperties GetCount, hr=0x%08x\n", hr );
-                }
-                else
-                {
-                    LOGV( L"pPortableDeviceProperties GetCount, count=%u\n", dwCount );
-                }
-            }
-            for ( DWORD dwIndex = 0; dwIndex < dwCount; ++dwIndex )
-            {
-                PROPERTYKEY propKey;
-                const HRESULT hr = pAttributes->GetAt( dwIndex, &propKey, NULL );
-                if ( FAILED(hr) )
-                {
-                    LOGE( L"! Failed. pPortableDeviceProperties GetAt, hr=0x%08x\n", hr );
-                }
-
-                DumpPropertyKey( &propKey );
-            }
-
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_DEVICE_FIRMWARE_VERSION
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceFirmwareVersion: %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_DEVICE_MANUFACTURER
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceManufacturer   : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_DEVICE_MODEL
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceModel          : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_DEVICE_SERIAL_NUMBER
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceSerialNumber   : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_DEVICE_FRIENDLY_NAME
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceFriendlyName   : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                BOOL BValue = FALSE;
-                const HRESULT hr = pAttributes->GetBoolValue(
-                    WPD_DEVICE_SUPPORTS_NON_CONSUMABLE
-                    , &BValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" DeviceSupportsNonConsumable: %s\n", (BValue?(L"TRUE"):(L"FALSE")) );
-                }
-            }
-
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_STORAGE_SERIAL_NUMBER
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" StorageSerialNumber  : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_STORAGE_DESCRIPTION
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" StorageDescription   : %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-
-
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_OBJECT_NAME
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" ObjectName: %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                LPWSTR pValue = NULL;
-                const HRESULT hr = pAttributes->GetStringValue(
-                    WPD_OBJECT_ORIGINAL_FILE_NAME
-                    , &pValue
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    LOGV( L" ObjectOriginalFileName: %s\n", pValue );
-                }
-
-                if ( NULL != pValue )
-                {
-                    ::CoTaskMemFree( pValue );
-                    pValue = NULL;
-                }
-            }
-            {
-                GUID guid;
-                const HRESULT hr = pAttributes->GetGuidValue(
-                    WPD_OBJECT_CONTENT_TYPE
-                    , &guid
-                    );
-                if ( SUCCEEDED(hr) )
-                {
-                    if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_FOLDER ) )
-                    {
-                        LOGV( L" Content type: Folder\n" );
-                    }
-                    else
-                    if ( ::IsEqualGUID( guid, WPD_CONTENT_TYPE_IMAGE ) )
-                    {
-                        LOGV( L" Content type: Image\n" );
-                    }
-                }
-            }
-        }
+        dispDeviceValues( pAttributes );
 
         if ( NULL != pAttributes )
         {
