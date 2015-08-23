@@ -652,71 +652,12 @@ dispDeviceInfo(
 
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+void
+enumWPDcore( IPortableDeviceManager* pPortableDeviceManager)
 {
-    if ( NULL != argv )
+    if ( NULL == pPortableDeviceManager )
     {
-        for ( int index = 1; index < argc; ++index )
-        {
-            if ( NULL == argv[index] )
-            {
-                continue;
-            }
-
-            if ( 0 == _tcscmp( argv[index], L"--verbose" ) )
-            {
-                s_optVerbose = true;
-            }
-            else
-            if ( 0 == _tcscmp( argv[index], L"--use-deviceftm" ) )
-            {
-                s_optUsePortableDeviceFTM = true;
-            }
-            else
-            if ( 0 == _tcsncmp( argv[index], L"--fetch-count=", _tcslen(L"--fetch-count=") ) )
-            {
-                TCHAR* endptr = NULL;
-                TCHAR* p = &argv[index][_tcslen(L"--fetch-count=")];
-                const unsigned long result = _tcstoul( p, &endptr, 10 );
-                if ( ULONG_MAX != result )
-                {
-                    if ( NULL != endptr && _T('\0') == *endptr )
-                    {
-                        s_optCountOfFetch = result;
-                    }
-                }
-            }
-        }
-    }
-
-    LOGI( L"Fetch Count: %u\n", s_optCountOfFetch );
-
-    bool needCoUninitialize = false;
-    {
-        const DWORD dwCoInit = COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE;
-        const HRESULT hr = ::CoInitializeEx( NULL, dwCoInit );
-        if ( FAILED(hr) )
-        {
-            ::DebugBreak();
-        }
-        else
-        {
-            needCoUninitialize = true;
-        }
-    }
-
-    IPortableDeviceManager* pPortableDeviceManager = NULL;
-    {
-        const HRESULT hr = ::CoCreateInstance(
-            CLSID_PortableDeviceManager
-            , NULL
-            , CLSCTX_INPROC_SERVER
-            , IID_PPV_ARGS(&pPortableDeviceManager)
-            );
-        if ( FAILED(hr) )
-        {
-            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
-        }
+        return;
     }
 
     DWORD dwCountDeviceId = 0;
@@ -1015,6 +956,78 @@ int _tmain(int argc, _TCHAR* argv[])
         delete [] pDeviceIdArray;
         pDeviceIdArray = NULL;
     }
+}
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    if ( NULL != argv )
+    {
+        for ( int index = 1; index < argc; ++index )
+        {
+            if ( NULL == argv[index] )
+            {
+                continue;
+            }
+
+            if ( 0 == _tcscmp( argv[index], L"--verbose" ) )
+            {
+                s_optVerbose = true;
+            }
+            else
+            if ( 0 == _tcscmp( argv[index], L"--use-deviceftm" ) )
+            {
+                s_optUsePortableDeviceFTM = true;
+            }
+            else
+            if ( 0 == _tcsncmp( argv[index], L"--fetch-count=", _tcslen(L"--fetch-count=") ) )
+            {
+                TCHAR* endptr = NULL;
+                TCHAR* p = &argv[index][_tcslen(L"--fetch-count=")];
+                const unsigned long result = _tcstoul( p, &endptr, 10 );
+                if ( ULONG_MAX != result )
+                {
+                    if ( NULL != endptr && _T('\0') == *endptr )
+                    {
+                        s_optCountOfFetch = result;
+                    }
+                }
+            }
+        }
+    }
+
+    LOGI( L"Fetch Count: %u\n", s_optCountOfFetch );
+
+    bool needCoUninitialize = false;
+    {
+        const DWORD dwCoInit = COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE;
+        const HRESULT hr = ::CoInitializeEx( NULL, dwCoInit );
+        if ( FAILED(hr) )
+        {
+            ::DebugBreak();
+        }
+        else
+        {
+            needCoUninitialize = true;
+        }
+    }
+
+    IPortableDeviceManager* pPortableDeviceManager = NULL;
+    {
+        const HRESULT hr = ::CoCreateInstance(
+            CLSID_PortableDeviceManager
+            , NULL
+            , CLSCTX_INPROC_SERVER
+            , IID_PPV_ARGS(&pPortableDeviceManager)
+            );
+        if ( FAILED(hr) )
+        {
+            LOGE( L"! Failed. CoCreateInstance CLSID_PortableDeviceManager, hr=0x%08x\n", hr );
+        }
+    }
+
+    enumWPDcore( pPortableDeviceManager );
 
     if ( NULL != pPortableDeviceManager )
     {
